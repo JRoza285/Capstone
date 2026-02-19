@@ -10,8 +10,8 @@ export default function Navbar() {
         {token ? (
           <>
             <NavLink to="/">Home</NavLink>
-            <NavLink to="/profile">Profile</NavLink>
             <NavLink to="/liftlibrary">Lift Library</NavLink>
+            <NavLink to="/progress">Progress</NavLink>
             <button onClick={logout}>Log out</button>
           </>
         ) : (
@@ -19,6 +19,7 @@ export default function Navbar() {
             <NavLink to="/login">Log in</NavLink>
             <NavLink to="/register">Register</NavLink>
             <NavLink to="/liftlibrary">Lift Library</NavLink>
+
           </>
         )}
       </nav>

@@ -4,6 +4,7 @@ import {
     getWeight,
     getWeightHistory,
     enterWeight,
+    getWeightGraph
 } from "../db/queries/weight.js";
 import requireUser from "../middleware/requireUser.js";
 import requireBody from "../middleware/requireBody.js";
@@ -51,6 +52,15 @@ router.post("/", requireBody(["weight", "date"]), async (req, res) => {
         console.error(error);
         res.status(500).send("Internal Server Error");
     }
+});
+
+router.get("/graph", requireUser, async (req, res) => {
+  try {
+    const weights = await getWeightGraph(req.user.id);
+    res.json(weights);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 

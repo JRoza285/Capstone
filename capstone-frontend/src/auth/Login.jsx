@@ -23,20 +23,25 @@ export default function Login() {
 
   return (
     <>
-      <h1>Log in to your account</h1>
-      <form action={onLogin}>
-        <label>
-          Username
-          <input type="username" name="username" required />
-        </label>
-        <label>
-          Password
-          <input type="password" name="password" required />
-        </label>
-        <button>Login</button>
-        {error && <output>{error}</output>}
-      </form>
-      <Link to="/register">Need an account? Register here.</Link>
+      <div className="form-container">
+        <h1>Log in to your account</h1>
+        <form action={onLogin}>
+          <label>
+            Username
+            <input type="text" name="username" className="short-input" required />
+          </label>
+
+          <label>
+            Password
+            <input type="password" name="password" className="short-input" required />
+          </label>
+
+          <button>Login</button>
+          {error && <output style={{ color: "red" }}>{error}</output>}
+        </form>
+        <Link to="/register">Need an account? Register here.</Link>
+      </div>
+
     </>
   );
 }

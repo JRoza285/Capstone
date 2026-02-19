@@ -77,3 +77,17 @@ RETURNING *;
 const { rows: [nutrition] } = await db.query(sql, [id, user_id, calories, date, protein, carbs, fats]);
 return nutrition;
 }
+
+//get nutrition history for graph
+
+export async function getNutritionGraph(user_id) {
+  if (!user_id) throw new Error("User ID is required");
+    const sql = `
+SELECT date, calories, protein, carbs, fats
+FROM nutrition
+WHERE user_id = $1
+ORDER BY date ASC;
+`;
+    const { rows } = await db.query(sql, [user_id]);
+    return rows;
+}

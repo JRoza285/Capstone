@@ -60,3 +60,22 @@ export async function createWeight(token, body) {
     }
     return await response.json();
 }
+
+// for graphing page
+
+export async function getWeightGraph(token) {
+  if (!token) {
+    throw new Error("Token is required to fetch weight graph");
+  }
+  const response = await fetch(`${API}/api/weight/graph`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch weight history");
+  }
+
+  return await response.json();
+}

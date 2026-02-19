@@ -102,3 +102,21 @@ export async function deleteNutrition(token, id) {
     return await response.json();
 }
 
+// Graph data for nutrition
+export async function getNutritionGraph(token) {
+  if (!token) throw new Error("Token is required to fetch nutrition graph");
+
+  const response = await fetch(`${API}/api/nutrition/graph`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const result = await response.json();
+    throw new Error(result.message || "Failed to fetch nutrition graph");
+  }
+
+  return await response.json(); // should return an array of nutrition entries
+}

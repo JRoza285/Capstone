@@ -1,112 +1,114 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useAuth } from "../auth/AuthContext.jsx";
-import { getLiftById, updateLift, getTargetMuscles } from "../api/lifts";
+import { useAuth } from "../auth/AuthContext";
+import { getLiftById, getTargetMuscles, updateLift } from "../api/lifts";
 
 export default function LiftUpdate() {
   const { id } = useParams();
   const { token } = useAuth();
   const navigate = useNavigate();
 
-  const [liftData, setLiftData] = useState({
-    name: "",
-    description: "",
-    target_muscle: ""
-  });
+  const [liftData, setLiftData] = useState(null);
   const [targetMuscles, setTargetMuscles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
-  // Load existing lift details AND target muscles
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const lift = await getLiftById(id, token); // needs token for protected route
-      setLiftData({
-        name: lift.name,
-        description: lift.description,
-        target_muscle: lift.target_muscle
-      });
+  // Fetch lift and target muscles on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const lift = await getLiftById(id);
+        setLiftData(lift);
 
-      const muscles = await getTargetMuscles(); // public route, no token needed
-      console.log("Target muscles:", muscles); // <--- add this for debugging
-      setTargetMuscles(muscles);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load lift or target muscles");
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchData();
-}, [id, token]);
+        const muscles = await getTargetMuscles();
+        setTargetMuscles(muscles);
 
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load lift data.");
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLiftData(prev => ({ ...prev, [name]: value }));
+    setLiftData({ ...liftData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!token) return setError("You must be logged in to update lifts.");
     try {
-      await updateLift(token, id, liftData);
+      await updateLift(id, liftData, token);
       navigate(`/lifts/${id}`);
     } catch (err) {
       console.error(err);
-      setError("Failed to update lift");
+      setError("Failed to update lift.");
     }
   };
 
-  if (loading) return <p>Loading lift details...</p>;
-  if (error) return <p>{error}</p>;
+  // Show loading while fetching
+  if (loading) return <p>Loading...</p>;
+
+  // Show error if no lift data
+  if (!liftData) return <p>{error || "Lift not found."}</p>;
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <h2>Update Lift</h2>
 
-      <label>
-        Name:
-        <input
-          type="text"
-          name="name"
-          value={liftData.name}
-          onChange={handleChange}
-          required
-        />
-      </label>
+      {!token && <p style={{ color: "red" }}>You must be logged in to update a lift.</p>}
 
-      <label>
-        Description:
-        <textarea
-          name="description"
-          value={liftData.description}
-          onChange={handleChange}
-          required
-        />
-      </label>
+      {token && (
+        <form onSubmit={handleSubmit}>
+          <label>
+            Name:
+            <input
+              type="text"
+              name="name"
+              value={liftData.name}
+              onChange={handleChange}
+              required
+            />
+          </label>
 
-      <label>
-        Target Muscle:
-        <select
-          name="target_muscle"
-          value={liftData.target_muscle}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select a target muscle</option>
-          {targetMuscles.map(tm => (
-            <option key={tm.id || tm.target_muscle} value={tm.target_muscle}>
-              {tm.target_muscle}
-            </option>
-          ))}
-        </select>
-      </label>
+          <label>
+            Description:
+            <textarea
+              name="description"
+              value={liftData.description}
+              onChange={handleChange}
+              required
+              className="short-textarea"
+            />
 
-      <button type="submit">Save Changes</button>
-      <button type="button" onClick={() => navigate(`/lifts/${id}`)}>
-        Cancel
-      </button>
-    </form>
+          </label>
+
+          <label>
+            Target Muscle:
+            <select
+              name="target_muscle"
+              value={liftData.target_muscle}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select a target muscle</option>
+              {targetMuscles.map((muscle, i) => (
+                <option key={i} value={muscle}>
+                  {muscle}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button type="submit">Save Changes</button>
+          <button type="button" onClick={() => navigate(`/lifts/${id}`)}>
+            Cancel
+          </button>
+        </form>
+      )}
+    </div>
   );
 }

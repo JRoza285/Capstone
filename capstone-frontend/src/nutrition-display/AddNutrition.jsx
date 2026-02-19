@@ -17,53 +17,54 @@ export default function AddNutrition() {
     const date = formData.get("date");
     const protein = formData.get("protein");
     const carbs = formData.get("carbs");
-    const fat = formData.get("fat");
+    const fats = formData.get("fats");
 
 
     try {
-      await createNutrition(token, { name, calories, date, protein, carbs, fat });
+      await createNutrition(token, { name, calories, date, protein, carbs, fats });
       navigate("/nutritionlibrary");
     } catch (err) {
       setError(err.message);
     }
   };
-  return (
-    <>
-      <h1>Add Nutrition</h1>
-      <form onSubmit={onAddNutrition}>
-        <label>
-          Name
-          <input type="text" name="name" required />
-        </label>
+return (
+  <>
+    <h1>Add Nutrition</h1>
+    <form className="add-nutrition-form" onSubmit={onAddNutrition}>
+      <label>
+        Name
+        <input type="text" name="name" required />
+      </label>
 
-        <label>
-          Calories
-          <input type="number" name="calories" required />
-        </label>
+      <label>
+        Calories
+        <input type="number" name="calories" required />
+      </label>
 
-        <label>
-          Date
-          <input type="date" name="date" required />
-        </label>
+      <label>
+        Date
+        <input type="date" name="date" required />
+      </label>
 
-        <label>
-          Protein
-          <input type="number" name="protein" required />
-        </label>
+      <label>
+        Protein
+        <input type="number" name="protein" required />
+      </label>
 
-        <label>
-          Carbs
-          <input type="number" name="carbs" required />
-        </label>
+      <label>
+        Carbs
+        <input type="number" name="carbs" required />
+      </label>
 
-        <label>
-          Fat
-          <input type="number" name="fat" required />
-        </label>
+      <label>
+        Fats
+        <input type="number" name="fats" required />
+      </label>
 
-        <button>Add</button>
-        {error && <p>{error}</p>}
-      </form>
-    </>
-  );
+      <button>Add</button>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+    </form>
+  </>
+);
+
 }

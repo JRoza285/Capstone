@@ -3,6 +3,7 @@ const router = express.Router();
 import{
     getNutrition,
     getCalories,
+    getNutritionGraph,
     newNutrition,
     updateNutrition,
     deleteNutrition
@@ -39,16 +40,29 @@ router.get("/calories", async (req, res) => {
 
 //newNutrition
 
-router.post("/", requireBody(["date", "calories", "protein", "carbs", "fats"]), async (req, res) => {
+router.post(
+  "/",
+  requireBody(["date", "calories", "protein", "carbs", "fats"]),
+  async (req, res) => {
     try {
-        const { date, calories, protein, carbs, fats } = req.body;
-        const newNutritionEntry = await newNutrition({ userId: req.user.id, date, calories, protein, carbs, fats });
-        res.status(201).json(newNutrition);
+      const { date, calories, protein, carbs, fats } = req.body;
+      const newNutritionEntry = await newNutrition({
+        userId: req.user.id,
+        date,
+        calories,
+        protein,
+        carbs,
+        fats,
+      });
+
+      res.status(201).json(newNutritionEntry); // ✅ send the created entry
     } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" }); // ✅ return JSON on errors
     }
-});
+  }
+);
+
 
 //update nutrition
 
@@ -78,6 +92,16 @@ router.delete("/:id", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
+router.get("/graph", requireUser, async (req, res) => {
+  try {
+    const weights = await getNutritionGraph(req.user.id); // backend query
+    res.json(weights);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 export default router;
 

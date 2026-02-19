@@ -40,3 +40,18 @@ RETURNING *;
 const { rows: [row] } = await db.query(sql, [userId, weight, date]);
 return row;
 }
+
+// -------------------- GET WEIGHT HISTORY --------------------
+export async function getWeightGraph(user_id) {
+  if (!user_id) throw new Error("User ID is required");
+
+  const { rows } = await db.query(
+    `SELECT id, user_id, date, weight
+     FROM weight
+     WHERE user_id = $1
+     ORDER BY date ASC`,
+    [user_id]
+  );
+
+  return rows; // returns ARRAY
+}

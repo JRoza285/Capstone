@@ -23,7 +23,8 @@ CREATE TABLE lifts (
 
 CREATE TABLE workouts (
   id serial PRIMARY KEY,
-  user_id integer NOT NULL REFERENCES users(id)
+  user_id integer NOT NULL REFERENCES users(id),
+  name text NOT NULL
 );
 
 CREATE TABLE workout_lifts (
@@ -31,8 +32,8 @@ CREATE TABLE workout_lifts (
   workout_id integer REFERENCES workouts(id),
   lift_id integer REFERENCES lifts(id),
   sets integer NOT NULL,
-  reps integer NOT NULL,
-  weight integer NOT NULL,
+  reps text NOT NULL,
+  weight integer NULL,
   proximity_to_failure integer NOT NULL
 );
 
