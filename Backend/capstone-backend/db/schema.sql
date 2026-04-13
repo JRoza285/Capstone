@@ -58,3 +58,11 @@ CREATE TABLE target_muscles (
     id serial PRIMARY KEY,
     target_muscle text NOT NULL UNIQUE
 );
+
+CREATE TABLE faq (
+  id serial PRIMARY KEY,
+  question text NOT NULL,
+  answer text NOT NULL
+);
+
+
