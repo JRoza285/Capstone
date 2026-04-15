@@ -13,6 +13,7 @@ import NutritionLibrary from "./nutrition-display/NutritionLibrary";
 import WeightLibrary from "./weight-display/WeightLibrary";
 import LiftUpdate from "./lifts-display/Lift-Update";
 import WorkoutDetails from "./workouts-display/WorkoutDetails";
+import FAQ from "./FAQ/FAQ";
 
 // Details
 import LiftDetails from "./lifts-display/Lift-Details";
@@ -22,6 +23,7 @@ import Progress from "./progress-graphs/progress";
 import AddWeight from "./weight-display/AddWeight";
 import AddNutrition from "./nutrition-display/AddNutrition";
 import AddWorkout from "./workouts-display/AddWorkout";
+import FAQAnswer from "./FAQ/FAQanswer.jsx";
 
 // Dashboard
 import ProfileHome from "./profile/ProfileHome";
@@ -35,63 +37,69 @@ export default function App() {
   };
 
   return (
-<Routes>
-  <Route element={<Layout />}>
-    {/* Home / Dashboard */}
-    <Route index element={token ? <ProfileHome /> : <Welcome />} />
+    <Routes>
+      <Route element={<Layout />}>
+        {/* Home / Dashboard */}
+        <Route index element={token ? <ProfileHome /> : <Welcome />} />
 
-    {/* Public routes */}
-    <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
-    <Route path="/welcome" element={<Welcome />} />
-    <Route path="/liftlibrary" element={<LiftLibrary />} />
+        {/* Public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/liftlibrary" element={<LiftLibrary />} />
+        <Route path="/faq" element={<FAQ />} />
 
-    {/* Protected routes */}
 
-    <Route
-      path="/workoutlibrary"
-      element={<ProtectedRoute><WorkoutLibrary /></ProtectedRoute>}
-    />
-    <Route
-      path="/nutritionlibrary"
-      element={<ProtectedRoute><NutritionLibrary /></ProtectedRoute>}
-    />
-    <Route
-      path="/weightlibrary"
-      element={<ProtectedRoute><WeightLibrary /></ProtectedRoute>}
-    />
-    <Route
-      path="/workouts/:id"
-      element={<ProtectedRoute><WorkoutDetails /></ProtectedRoute>}
-    />
-    <Route
-      path="/lifts/:id"
-      element={<ProtectedRoute><LiftDetails /></ProtectedRoute>}
-    />
-    <Route
-      path="/lifts/:id/update"
-      element={<ProtectedRoute><LiftUpdate /></ProtectedRoute>}
-    />
-    <Route
-      path="/addweight"
-      element={<ProtectedRoute><AddWeight /></ProtectedRoute>}
-    />
-    <Route
-      path="/addnutrition"
-      element={<ProtectedRoute><AddNutrition /></ProtectedRoute>}
-    />
-    <Route
-      path="/addworkout"
-      element={<ProtectedRoute><AddWorkout /></ProtectedRoute>}
-    />
+        {/* Protected routes */}
 
-    {/* THIS IS THE FIX */}
+        <Route
+          path="/workoutlibrary"
+          element={<ProtectedRoute><WorkoutLibrary /></ProtectedRoute>}
+        />
+        <Route
+          path="/nutritionlibrary"
+          element={<ProtectedRoute><NutritionLibrary /></ProtectedRoute>}
+        />
+        <Route
+          path="/weightlibrary"
+          element={<ProtectedRoute><WeightLibrary /></ProtectedRoute>}
+        />
+        <Route
+          path="/workouts/:id"
+          element={<ProtectedRoute><WorkoutDetails /></ProtectedRoute>}
+        />
+        <Route
+          path="/lifts/:id"
+          element={<ProtectedRoute><LiftDetails /></ProtectedRoute>}
+        />
+        <Route
+          path="/lifts/:id/update"
+          element={<ProtectedRoute><LiftUpdate /></ProtectedRoute>}
+        />
+        <Route
+          path="/addweight"
+          element={<ProtectedRoute><AddWeight /></ProtectedRoute>}
+        />
+        <Route
+          path="/addnutrition"
+          element={<ProtectedRoute><AddNutrition /></ProtectedRoute>}
+        />
+        <Route
+          path="/addworkout"
+          element={<ProtectedRoute><AddWorkout /></ProtectedRoute>}
+        />
+        <Route
+          path="/FAQanswers"
+          element={<ProtectedRoute><FAQAnswer /></ProtectedRoute>}
+          />
+
+          {/* THIS IS THE FIX */}
     <Route
-      path="/progress"
-      element={<ProtectedRoute><Progress /></ProtectedRoute>}
-    />
-  </Route>
-</Routes>
+          path="/progress"
+          element={<ProtectedRoute><Progress /></ProtectedRoute>}
+        />
+      </Route>
+    </Routes>
 
   );
 }

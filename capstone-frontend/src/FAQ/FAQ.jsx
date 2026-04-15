@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
 import { getQuestions, getAnswers, createQuestion } from "../api/FAQ";
 import { useAuth } from "../auth/AuthContext";
 
@@ -7,10 +6,7 @@ export default function FAQ() {
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
     const [newQuestion, setNewQuestion] = useState("");
-    const [newAnswer, setNewAnswer] = useState({ question_id: "", answer: "" });
     const { token } = useAuth();
-
-    // Fetch questions
 
     const syncQuestions = async () => {
         try {
@@ -21,8 +17,6 @@ export default function FAQ() {
         }
     };
 
-    // Fetch answers for a question
-
     const syncAnswers = async (question_id) => {
         try {
             const fetchedAnswers = await getAnswers(question_id);
@@ -32,9 +26,9 @@ export default function FAQ() {
         }
     };
 
-    // Post new question
-
     const handlePostQuestion = async () => {
+        if (!newQuestion.trim()) return;
+
         try {
             await createQuestion({ question: newQuestion }, token);
             setNewQuestion("");
@@ -44,8 +38,6 @@ export default function FAQ() {
         }
     };
 
-    // Fetch data on initial load
-
     useEffect(() => {
         syncQuestions();
     }, []);
@@ -53,34 +45,43 @@ export default function FAQ() {
     return (
         <div>
             <h1>FAQ</h1>
-            {/* create a question form */}
-<h2>Ask a Question</h2>
-<form onSubmit={(e) => {
-    e.preventDefault();
-    handlePostQuestion();
-}}>
-    <input
-        type="text"
-        value={newQuestion}
-        onChange={(e) => setNewQuestion(e.target.value)}
-        placeholder="Enter your question"
-    />
-    <button type="submit">Submit</button>
-</form>
-<h2>Questions</h2>
-<div>
-    {questions.map((question) => (
-        <div key={question.id}>
-            <p>{question.question}</p>
-            <button onClick={() => syncAnswers(question.id)}>View Answers</button>
-            {answers[question.id] && (
-                <div>
-                    <h3>Answers:</h3>
-                    {answers[question.id].map((answer) => (
-                        <p key={answer.id}>{answer.answer}</p>
-                    ))}
-                </div>
-            )}
+
+            <h2>Ask a Question</h2>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handlePostQuestion();
+                }}
+            >
+                <input
+                    type="text"
+                    value={newQuestion}
+                    onChange={(e) => setNewQuestion(e.target.value)}
+                    placeholder="Enter your question"
+                />
+                <button type="submit">Submit</button>
+            </form>
+
+            <h2>Questions</h2>
+            <div>
+                {questions.map((question) => (
+                    <div key={question.id}>
+                        <p>{question.question}</p>
+                        <button onClick={() => syncAnswers(question.id)}>
+                            View Answers
+                        </button>
+
+                        {answers[question.id] && (
+                            <div>
+                                <h3>Answers:</h3>
+                                {answers[question.id].map((answer) => (
+                                    <p key={answer.id}>{answer.answer}</p>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                ))}
+            </div>
         </div>
-    ))}
-</div>
+    );
+}
