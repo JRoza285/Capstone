@@ -4,9 +4,13 @@ const API = import.meta.env.VITE_API;
 
 export async function getQuestions() {
     try {
+
         const response = await fetch(API + "/api/faq/questions");
-        const result = await response.json();
-        return result;
+
+        const text = await response.text(); // temporarily use text
+        console.log("Raw response:", text);
+
+        return JSON.parse(text); // optional for now
     } catch (e) {
         console.error(e);
         return [];

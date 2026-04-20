@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { getAnswers, createAnswer } from "../api/FAQ";
 import { useAuth } from "../auth/AuthContext";
+import { useParams } from "react-router";
 
-export default function FAQAnswer({ question_id }) {
+export default function FAQAnswer() {
+    const { question_id } = useParams();
+
     const [answer, setAnswer] = useState("");
     const [answers, setAnswers] = useState([]);
     const { token } = useAuth();
 
-    // Fetch answers for this question
     const fetchAnswers = async () => {
         try {
             const fetchedAnswers = await getAnswers(question_id);
@@ -17,42 +19,43 @@ export default function FAQAnswer({ question_id }) {
         }
     };
 
-    // Post a new answer
     const handlePostAnswer = async () => {
         if (!token) {
             alert("You must be logged in to post an answer.");
             return;
         }
+
         try {
             await createAnswer(question_id, answer, token);
             setAnswer("");
-            fetchAnswers(); // refresh after posting
+            fetchAnswers();
         } catch (error) {
             console.error("Error posting answer:", error);
         }
     };
 
-    // Load answers on mount and when question_id changes
     useEffect(() => {
-        fetchAnswers();
+        if (question_id) {
+            fetchAnswers();
+        }
     }, [question_id]);
 
     return (
         <div>
             <h2>Answers</h2>
 
-            {/* Display answers */}
             {answers.length === 0 ? (
                 <p>No answers yet.</p>
             ) : (
-                answers.map((ans, index) => (
-                    <div key={index}>
-                        <p>{ans.text}</p>
+                answers.map((ans) => (
+                    <div key={ans.id}>
+                        <p>{ans.answer}</p>
                     </div>
                 ))
             )}
 
             <h3>Post an Answer</h3>
+
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
