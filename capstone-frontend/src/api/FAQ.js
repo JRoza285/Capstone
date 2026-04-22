@@ -1,4 +1,5 @@
 const API = import.meta.env.VITE_API;
+console.log("INIT API =", API);
 
 //Get all FAQ
 
@@ -54,18 +55,20 @@ export async function createAnswer(question_id, answer, token) {
 //Post question
 
 export async function createQuestion(question) {
-    try {
-        const response = await fetch(API + "/api/faq/questions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ question })
-        });
-        const result = await response.json();
-        return result;
-    } catch (e) {
-        console.error(e);
-        return [];
-    }
+    console.log("🚀 createQuestion CALLED with:", question);
+    console.log("🌐 API VALUE:", API);
+
+    const response = await fetch(API + "/api/faq/questions", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ question })
+    });
+
+    console.log("📡 FETCH SENT");
+
+    const result = await response.json();
+    return result;
 }
+

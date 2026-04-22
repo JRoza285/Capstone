@@ -26,21 +26,26 @@ export default function FAQ() {
         }
     };
 
-    const handlePostQuestion = async () => {
-        if (!newQuestion.trim()) return;
+const handlePostQuestion = async () => {
+    console.log("🔥 HANDLE POST FIRED");
 
-        try {
-            await createQuestion({ question: newQuestion }, token);
-            setNewQuestion("");
-            syncQuestions();
-        } catch (error) {
-            console.error("Error posting question:", error);
-        }
-    };
+    if (!newQuestion.trim()) {
+        console.log("❌ Empty question blocked");
+        return;
+    }
 
-    useEffect(() => {
+    console.log("📤 Sending:", newQuestion);
+
+    try {
+        await createQuestion(newQuestion);
+        console.log("✅ API call finished");
+
+        setNewQuestion("");
         syncQuestions();
-    }, []);
+    } catch (error) {
+        console.error("Error posting question:", error);
+    }
+};
 
     return (
         <div>
