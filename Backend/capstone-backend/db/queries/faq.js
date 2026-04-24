@@ -1,36 +1,36 @@
 import db from "#db/client";
 
 // --------------------
-// Get all questions
+// Get all FAQ entries
 // --------------------
-export async function getQuestions() {
+export async function getFaqs() {
   const sql = `
     SELECT *
-    FROM questions
+    FROM faq
     ORDER BY id ASC;
   `;
 
-  const { rows: questions } = await db.query(sql);
-  return questions;
+  const { rows: faqs } = await db.query(sql);
+  return faqs;
 }
 
 // --------------------
-// Get answers for a question
+// Get unanswered FAQ entries (useful for admin)
 // --------------------
-export async function getAnswers(question_id) {
+export async function getUnansweredFaqs() {
   const sql = `
     SELECT *
-    FROM answers
-    WHERE question_id = $1
+    FROM faq
+    WHERE answer IS NULL
     ORDER BY id ASC;
   `;
 
-  const { rows: answers } = await db.query(sql, [question_id]);
-  return answers;
+  const { rows: faqs } = await db.query(sql);
+  return faqs;
 }
 
 // --------------------
-// Create a question
+// Create a question (no answer yet)
 // --------------------
 export async function createQuestion({ question }) {
   if (!question) {
@@ -38,29 +38,46 @@ export async function createQuestion({ question }) {
   }
 
   const sql = `
-    INSERT INTO questions (question)
+    INSERT INTO faq (question)
     VALUES ($1)
     RETURNING *;
   `;
 
-  const { rows: [newQuestion] } = await db.query(sql, [question]);
-  return newQuestion;
+  const { rows: [newFaq] } = await db.query(sql, [question]);
+  return newFaq;
 }
 
 // --------------------
-// Create an answer
+// Add / update an answer
 // --------------------
-export async function createAnswer({ question_id, answer }) {
-  if (!question_id || !answer) {
-    throw new Error("Question ID and answer text are required");
+export async function addAnswer({ id, answer }) {
+  if (!id || !answer) {
+    throw new Error("FAQ id and answer text are required");
   }
 
   const sql = `
-    INSERT INTO answers (question_id, answer)
-    VALUES ($1, $2)
+    UPDATE faq
+    SET answer = $1,
+        status = 'answered',
+        answered_at = NOW()
+    WHERE id = $2
     RETURNING *;
   `;
 
-  const { rows: [newAnswer] } = await db.query(sql, [question_id, answer]);
-  return newAnswer;
+  const { rows: [updatedFaq] } = await db.query(sql, [answer, id]);
+  return updatedFaq;
+}
+
+// --------------------
+// Get single FAQ entry by ID
+// --------------------
+export async function getFaqById(id) {
+  const sql = `
+    SELECT *
+    FROM faq
+    WHERE id = $1;
+  `;
+
+  const { rows: [faq] } = await db.query(sql, [id]);
+  return faq;
 }

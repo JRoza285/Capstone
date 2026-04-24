@@ -1,74 +1,73 @@
 const API = import.meta.env.VITE_API;
 console.log("INIT API =", API);
 
-//Get all FAQ
-
+// --------------------
+// Get all FAQs (PUBLIC)
+// --------------------
 export async function getQuestions() {
-    try {
+  const response = await fetch(API + "/api/faq");
 
-        const response = await fetch(API + "/api/faq/questions");
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText);
+  }
 
-        const text = await response.text(); // temporarily use text
-        console.log("Raw response:", text);
+  return await response.json();
+}
 
-        return JSON.parse(text); // optional for now
-    } catch (e) {
-        console.error(e);
-        return [];
+// --------------------
+// Get unanswered FAQs (ADMIN ONLY)
+// --------------------
+export async function getUnanswered(token) {
+  const response = await fetch(API + "/api/faq/unanswered", {
+    headers: {
+      "Authorization": `Bearer ${token}`
     }
+  });
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  return await response.json();
 }
 
-//Get all answers
+// --------------------
+// Create question (USER or ADMIN depending on backend rules)
+// --------------------
+export async function createQuestion(question, token) {
+  const response = await fetch(API + "/api/faq", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` })
+    },
+    body: JSON.stringify({ question })
+  });
 
-export async function getAnswers(question_id) {
-    try {
-        const response = await fetch(API + `/api/faq/answers/${question_id}`);
-        const result = await response.json();
-        return result;
-    } catch (e) {
-        console.error(e);
-        return [];
-    }
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  return await response.json();
 }
 
-//Post answer
+// --------------------
+// Add answer (ADMIN ONLY)
+// --------------------
+export async function createAnswer(id, answer, token) {
+  const response = await fetch(API + `/api/faq/${id}/answer`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ answer })
+  });
 
-export async function createAnswer(question_id, answer, token) {
-    try {
-        const response = await fetch(API + `/api/faq/answers/${question_id}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({ answer })
-        });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
 
-        const result = await response.json();
-        return result;
-    } catch (e) {
-        console.error(e);
-        return [];
-    }
+  return await response.json();
 }
-
-//Post question
-
-export async function createQuestion(question) {
-    console.log("🚀 createQuestion CALLED with:", question);
-    console.log("🌐 API VALUE:", API);
-
-    const response = await fetch(API + "/api/faq/questions", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ question })
-    });
-
-    console.log("📡 FETCH SENT");
-
-    const result = await response.json();
-    return result;
-}
-
