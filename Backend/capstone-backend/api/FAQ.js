@@ -16,7 +16,7 @@ import requireUser from "../middleware/requireUser.js";
 // --------------------
 // PUBLIC
 // --------------------
-router.get("/faq", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const faqs = await getFaqs();
     res.json(faqs);
@@ -25,7 +25,7 @@ router.get("/faq", async (req, res) => {
   }
 });
 
-router.get("/faq/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const faq = await getFaqById(req.params.id);
     res.json(faq);
@@ -34,7 +34,7 @@ router.get("/faq/:id", async (req, res) => {
   }
 });
 
-router.post("/faq", requireBody, async (req, res) => {
+router.post("/", requireBody, async (req, res) => {
   try {
     const faq = await createQuestion({
       question: req.body.question
@@ -50,7 +50,7 @@ router.post("/faq", requireBody, async (req, res) => {
 // --------------------
 // ADMIN ONLY
 // --------------------
-router.get("/faq/unanswered", requireUser, async (req, res) => {
+router.get("/unanswered", requireUser, async (req, res) => {
   try {
     const faqs = await getUnansweredFaqs();
     res.json(faqs);
@@ -59,7 +59,7 @@ router.get("/faq/unanswered", requireUser, async (req, res) => {
   }
 });
 
-router.patch("/faq/:id/answer", requireUser, requireBody, async (req, res) => {
+router.patch("/:id/answer", requireUser, requireBody, async (req, res) => {
   try {
     const updatedFaq = await addAnswer({
       id: req.params.id,
