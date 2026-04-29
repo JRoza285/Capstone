@@ -25,16 +25,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  try {
-    const faq = await getFaqById(req.params.id);
-    res.json(faq);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.post("/", requireBody, async (req, res) => {
+router.post("/", requireBody(["question"]), async (req, res) => {
   try {
     const faq = await createQuestion({
       question: req.body.question
@@ -59,7 +50,7 @@ router.get("/unanswered", requireUser, async (req, res) => {
   }
 });
 
-router.patch("/:id/answer", requireUser, requireBody, async (req, res) => {
+router.patch("/:id/answer", requireUser, requireBody(["answer"]), async (req, res) => {
   try {
     const updatedFaq = await addAnswer({
       id: req.params.id,
@@ -69,6 +60,15 @@ router.patch("/:id/answer", requireUser, requireBody, async (req, res) => {
     res.status(200).json(updatedFaq);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const faq = await getFaqById(req.params.id);
+    res.json(faq);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

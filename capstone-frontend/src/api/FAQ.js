@@ -33,6 +33,19 @@ export async function getUnanswered(token) {
 }
 
 // --------------------
+// Get single FAQ by id (PUBLIC)
+// --------------------
+export async function getQuestion(id) {
+  const response = await fetch(API + `/api/faq/${id}`);
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  return await response.json();
+}
+
+// --------------------
 // Create question (USER or ADMIN depending on backend rules)
 // --------------------
 export async function createQuestion(question, token) {

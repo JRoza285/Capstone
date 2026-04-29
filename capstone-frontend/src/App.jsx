@@ -24,6 +24,7 @@ import AddWeight from "./weight-display/AddWeight";
 import AddNutrition from "./nutrition-display/AddNutrition";
 import AddWorkout from "./workouts-display/AddWorkout";
 import FAQAnswer from "./FAQ/FAQanswer.jsx";
+import FAQAnswersList from "./FAQ/FAQAnswersList";
 
 // Dashboard
 import ProfileHome from "./profile/ProfileHome";
@@ -90,8 +91,12 @@ export default function App() {
         />
         <Route
           path="/FAQanswers"
+          element={<ProtectedRoute><FAQAnswersList /></ProtectedRoute>}
+        />
+        <Route
+          path="/FAQanswers/:id"
           element={<ProtectedRoute><FAQAnswer /></ProtectedRoute>}
-          />
+        />
 
           {/* THIS IS THE FIX */}
     <Route
