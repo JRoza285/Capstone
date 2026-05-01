@@ -58,7 +58,6 @@ export async function addAnswer({ id, answer }) {
   const sql = `
     UPDATE faq
     SET answer = $1,
-        status = 'answered',
         answered_at = NOW()
     WHERE id = $2
     RETURNING *;
